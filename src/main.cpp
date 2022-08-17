@@ -1,14 +1,12 @@
 #include <M5EPD.h>
 #include "resources/ImageResource.h"
 #include "ui/ui_manager.h"
-#include "hap/hap_manager.h"
 #include "system/system_util.h"
 #include "wifi_info.h"
 
 M5EPD_Canvas canvas(&M5.EPD);
 ui_manager UI(&canvas);
 system_util SYS;
-hap_manager HAP;
 
 void task0(void *arg)
 {
@@ -55,10 +53,6 @@ void setup()
     // Try to connect wifi.
     SYS.connect_wifi(ssid, password);
 
-    // Associating GUI with HAP
-    auto id_num = UI.get_button_num();
-    HAP.initialize(id_num);
-
     // Display refresh task
     xTaskCreatePinnedToCore(task0, "Task0", 4096, NULL, 1, NULL, 0);
 }
@@ -70,7 +64,6 @@ void loop()
     if (id >= 0)
     {
         Serial.printf("execute button (id = %d)\n", id);
-        HAP.button_callback(id, button_event_single_press);
         // When the process is finished, set the button to the default color.
         UI.release_button(id, UPDATE_MODE_DU);
     }
