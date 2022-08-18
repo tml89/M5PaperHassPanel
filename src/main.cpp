@@ -51,7 +51,7 @@ void setup()
     UI.draw_all(UPDATE_MODE_GC16);
 
     // Try to connect wifi.
-    SYS.connect_wifi(ssid, password);
+    SYS.connect_wifi(WIFI_SSID, WIFI_PASSWORD);
 
     // Display refresh task
     xTaskCreatePinnedToCore(task0, "Task0", 4096, NULL, 1, NULL, 0);
