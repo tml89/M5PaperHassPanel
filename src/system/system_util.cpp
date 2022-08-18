@@ -4,22 +4,40 @@ system_util::system_util()
 {
 }
 
-void system_util::connect_wifi(const char *ssid, const char *passphrase)
+uint8_t system_util::connect_wifi(const char *ssid, const char *passphrase)
 {
     Serial.print("Connecting to ");
     Serial.println(ssid);
 
     WiFi.begin(ssid, passphrase);
 
-    while (WiFi.status() != WL_CONNECTED)
+    unsigned long start = millis();
+    uint8_t connectionStatus;
+    bool AttemptConnection = true;
+    while (AttemptConnection)
     {
-        delay(500);
-        Serial.print(".");
+        connectionStatus = WiFi.status();
+        if (millis() > start + 2000)
+        { // Wait 2-secs maximum
+          AttemptConnection = false;
+        }
+        if (connectionStatus == WL_CONNECTED || connectionStatus == WL_CONNECT_FAILED)
+        {
+          AttemptConnection = false;
+        }
+        delay(50);
     }
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
+    if (connectionStatus == WL_CONNECTED)
+    {
+        //wifi_signal = WiFi.RSSI(); // Get Wifi Signal strength now, because the WiFi will be turned off to save power!
+        Serial.println("WiFi connected at: " + WiFi.localIP().toString());
+    }
+    else
+    {
+        Serial.println("WiFi connection *** FAILED ***");
+    }
+    return connectionStatus;
+   
 }
 
 void system_util::reboot()
