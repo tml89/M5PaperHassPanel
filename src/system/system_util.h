@@ -12,7 +12,7 @@ class system_util
 public:
     system_util();
 
-    void connect_wifi(const char *ssid, const char *passphrase);
+    uint8_t connect_wifi(const char *ssid, const char *passphrase);
     void reboot();
 
 private:
