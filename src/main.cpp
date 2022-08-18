@@ -2,7 +2,7 @@
 #include "resources/ImageResource.h"
 #include "ui/ui_manager.h"
 #include "system/system_util.h"
-#include "wifi_info.h"
+#include "config.h"
 
 M5EPD_Canvas canvas(&M5.EPD);
 ui_manager UI(&canvas);
