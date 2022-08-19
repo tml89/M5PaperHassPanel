@@ -11,7 +11,7 @@ class system_util
 {
 public:
     system_util();
-
+    int GetBattery();
     uint8_t connect_wifi(const char *ssid, const char *passphrase);
     void reboot();
 
