@@ -5,6 +5,8 @@ typedef struct
 {
     int x;
     int y;
+    int x1;
+    int y1;
 } position;
 
 typedef struct

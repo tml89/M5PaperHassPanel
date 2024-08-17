@@ -13,6 +13,13 @@ void ui_manager::create_button(int x, int y, int w, int h, const uint8_t *defaul
     button_list_.push_back(o);
 }
 
+void ui_manager::create_button2(int x, int y, int w, int h, const uint8_t *default_icon_data)
+{
+    int id = button_id_generator.get_id();
+    ui_object o(id, x, y, w, h,default_icon_data);
+    button_list_.push_back(o);
+}
+
 void ui_manager::create_object(int x, int y, int w, int h, const uint8_t *image_data)
 {
     int id = -1;
@@ -26,6 +33,22 @@ void ui_manager::create_label(int x, int y, uint8_t size, uint16_t color, uint16
     label_list_.push_back(l);
 }
 
+void ui_manager::create_line(int x0, int y0,int x1, int y1, uint16_t color, uint16_t thickness)
+{
+    ui_line l(x0,y0,x1,y1, color, thickness);
+    line_list_.push_back(l);
+}
+
+void ui_manager:: create_Hline(int x, int y, int h, uint16_t color, uint16_t thickness)
+{
+    create_line(x,y, x + h, y, color ,thickness);
+}
+
+void ui_manager:: create_Vline(int x, int y, int h, uint16_t color, uint16_t thickness)
+{
+    create_line(x,y, x, y + h, color ,thickness);
+}
+
 void ui_manager::initialize()
 {
     M5.EPD.SetRotation(90);
@@ -37,6 +60,17 @@ void ui_manager::initialize()
     canvas_->setTextDatum(TC_DATUM);
 
     button_num_ = (int)button_list_.size();
+}
+
+void ui_manager::clear()
+{   
+    button_list_.clear();
+    object_list_.clear();
+    label_list_.clear();
+    line_list_.clear();
+    canvas_->fillCanvas(0);
+    //M5.EPD.Clear(true);
+    draw_all(UPDATE_MODE_DU);
 }
 
 void ui_manager::draw_all(m5epd_update_mode_t mode)
@@ -71,6 +105,14 @@ void ui_manager::draw_all(m5epd_update_mode_t mode)
         canvas_->drawString(title, pos.x, pos.y);
     }
 
+     for (auto &obj : line_list_)
+    {
+        auto pos = obj.get_position();
+        auto color = obj.get_color();
+        auto thickness = obj.get_thickness();
+        canvas_->drawLine(pos.x, pos.y, pos.x1, pos.y1, thickness, color);
+    }
+
     canvas_->pushCanvas(0, 0, mode);
 }
 
@@ -95,6 +137,7 @@ void ui_manager::push_button(int id, m5epd_update_mode_t mode)
         auto image = button_list_[id].get_tapped_image();
         canvas_->pushImage(pos.x, pos.y, size.w, size.h, image);
         canvas_->pushCanvas(0, 0, mode);
+
     }
 }
 
@@ -143,13 +186,13 @@ int ui_manager::check_executable_button_id()
                     target_touch_point_.y = FingerItem.y;
                     touch_id_ = judge_touched_button_id(target_touch_point_.x, target_touch_point_.y);
                     Serial.printf("finger ID: %d --> (x, y) = (%d, %d), size: %d, button Id: %d\r\n", FingerItem.id, FingerItem.x, FingerItem.y, FingerItem.size, touch_id_);
-                    push_button(touch_id_, UPDATE_MODE_DU);
+                    //push_button(touch_id_, UPDATE_MODE_DU4);
                 }
                 touch_flag_ = true;
             }
             else
             {
-                Serial.printf("same point touch.\n");
+                //Serial.printf("same point touch.\n");
             }
         }
         else
